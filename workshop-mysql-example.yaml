@@ -107,11 +107,11 @@
               env: 
                 - name: "DATABASE_SERVICE_NAME"
                   value: "${DATABASE_SERVICE_NAME}"
-                - name: "MYSQL_USER"
+                - name: "${APPLICATION_NAME}_MYSQL_USER"
                   value: "${DATABASE_USER}"
-                - name: "MYSQL_PASSWORD"
+                - name: "${APPLICATION_NAME}_MYSQL_PASSWORD"
                   value: "${DATABASE_PASSWORD}"
-                - name: "MYSQL_DATABASE"
+                - name: "${APPLICATION_NAME}_MYSQL_DATABASE"
                   value: "${DATABASE_NAME}"
               resources: {}
               terminationMessagePath: "/dev/termination-log"
@@ -178,11 +178,11 @@
                   tcpSocket: 
                     port: 3306
                 env: 
-                  - name: "MYSQL_USER"
+                  - name: "${APPLICATION_NAME}_MYSQL_USER"
                     value: "${DATABASE_USER}"
-                  - name: "MYSQL_PASSWORD"
+                  - name: "${APPLICATION_NAME}_MYSQL_PASSWORD"
                     value: "${DATABASE_PASSWORD}"
-                  - name: "MYSQL_DATABASE"
+                  - name: "${APPLICATION_NAME}_MYSQL_DATABASE"
                     value: "${DATABASE_NAME}"
         triggers: 
           - type: "ImageChange"
