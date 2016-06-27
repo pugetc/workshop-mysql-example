@@ -258,7 +258,7 @@
     - name: "SOURCE_REPOSITORY_URL"
       displayName: "Git Repository URL"
       description: "The URL of the repository with your application source code."
-      value: "https://github.com/orangekmt/workshop-example.git"
+      value: "https://github.com/orangekmt/workshop-mysql-example.git"
     - name: "WEBHOOK_SECRET"
       displayName: "Git Webhook Secret"
       description: "A secret string used to configure the Git webhook."
