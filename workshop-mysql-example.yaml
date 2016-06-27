@@ -105,11 +105,11 @@
               - containerPort: 8443
                 protocol: TCP
               env: 
-                - name: "$MYSQL_USER"
+                - name: "MYSQL_USER"
                   value: "${DATABASE_USER}"
-                - name: "$MYSQL_PASSWORD"
+                - name: "MYSQL_PASSWORD"
                   value: "${DATABASE_PASSWORD}"
-                - name: "$MYSQL_DATABASE"
+                - name: "MYSQL_DATABASE"
                   value: "${DATABASE_NAME}"
               resources: {}
               terminationMessagePath: "/dev/termination-log"
