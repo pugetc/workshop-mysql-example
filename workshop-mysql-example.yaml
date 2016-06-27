@@ -104,17 +104,15 @@
                 protocol: TCP
               - containerPort: 8443
                 protocol: TCP
-              env: 
-                - name: "DATABASE_SERVICE_NAME"
-                  value: "${DATABASE_SERVICE_NAME}"
-                - name: "DATABASE_ENGINE"
-                  value: "${DATABASE_ENGINE}"
-                - name: "DATABASE_NAME"
-                  value: "${DATABASE_NAME}"
-                - name: "DATABASE_USER"
-                  value: "${DATABASE_USER}"
-                - name: "DATABASE_PASSWORD"
-                  value: "${DATABASE_PASSWORD}"
+            env: 
+              - name: "DATABASE_SERVICE_NAME"
+                value: "${DATABASE_SERVICE_NAME}"
+              - name: "MYSQL_USER"
+                value: "${DATABASE_USER}"
+              - name: "MYSQL_PASSWORD"
+                value: "${DATABASE_PASSWORD}"
+              - name: "MYSQL_DATABASE"
+                value: "${DATABASE_NAME}"
               resources: {}
               terminationMessagePath: "/dev/termination-log"
               securityContext:
@@ -258,7 +256,7 @@
       displayName: "APPLICATION_NAME"
       description: "The name assigned to all of the objects defined in this template."
       required: true
-      value: "workshop-example"
+      value: "workshop"
     - name: "SOURCE_REPOSITORY_URL"
       displayName: "Git Repository URL"
       description: "The URL of the repository with your application source code."
@@ -270,17 +268,15 @@
       from: "[a-zA-Z0-9]{40}"
     - name: "DATABASE_SERVICE_NAME"
       displayName: "Database Service Name"
-      value: "mysql"
-    - name: "DATABASE_ENGINE"
-      displayName: "Database Engine"
-      description: "Database engine: postgresql, mysql or sqlite (default)."
-      value: "mysql"
+      description: "The name assigned to all of the DB objects defined in this template."
+      required: true
+      value: "workshop-mysql"
     - name: "DATABASE_NAME"
       displayName: "Database Name"
-      value: "default"
+      value: "mysqldb"
     - name: "DATABASE_USER"
       displayName: "Database User"
-      value: "cakephp"
+      value: "mysql"
     - name: "DATABASE_PASSWORD"
       displayName: "Database Password"
       generate: "expression"
