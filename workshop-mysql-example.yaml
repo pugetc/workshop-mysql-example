@@ -5,13 +5,13 @@
   kind: "Template"
   apiVersion: "v1"
   metadata: 
-    name: "workshop-example"
+    name: "workshop-mysql-example"
     annotations: 
-      description: "An example To Do List Application"
-      tags: "instant-app,jboss,workshop,kermit"
+      description: "An example ToDo List Application with MySQL Database"
+      tags: "instant-app,jboss,mysql,workshop,kermit"
       iconClass: "icon-jboss"
   labels: 
-    template: "workshop-example"
+    template: "workshop-mysql-example"
   objects:
 #############################
 # Layer 0: OpenShift Images #
@@ -74,8 +74,7 @@
 ########################
 # Layer 3: Deployments #
 ########################
-    - 
-      kind: "DeploymentConfig"
+    - kind: "DeploymentConfig"
       apiVersion: "v1"
       metadata: 
         name: "${APPLICATION_NAME}"
@@ -105,6 +104,17 @@
                 protocol: TCP
               - containerPort: 8443
                 protocol: TCP
+              env: 
+                - name: "DATABASE_SERVICE_NAME"
+                  value: "${DATABASE_SERVICE_NAME}"
+                - name: "DATABASE_ENGINE"
+                  value: "${DATABASE_ENGINE}"
+                - name: "DATABASE_NAME"
+                  value: "${DATABASE_NAME}"
+                - name: "DATABASE_USER"
+                  value: "${DATABASE_USER}"
+                - name: "DATABASE_PASSWORD"
+                  value: "${DATABASE_PASSWORD}"
               resources: {}
               terminationMessagePath: "/dev/termination-log"
               securityContext:
@@ -121,6 +131,71 @@
               from: 
                 kind: "ImageStreamTag"
                 name: "${APPLICATION_NAME}:latest"
+          - type: "ConfigChange"
+    - kind: "DeploymentConfig"
+      apiVersion: "v1"
+      metadata: 
+        name: "${DATABASE_SERVICE_NAME}"
+        annotations: 
+          description: "Defines how to deploy the database"
+          deploymentConfig: "${DATABASE_SERVICE_NAME}"
+          application: "${APPLICATION_NAME}"
+      spec:
+        replicas: 1
+        selector: 
+          deploymentConfig: "${DATABASE_SERVICE_NAME}"
+          application: "${APPLICATION_NAME}"
+        strategy: 
+          type: "Recreate"
+        template: 
+          metadata: 
+            name: "${DATABASE_SERVICE_NAME}"
+            labels: 
+              deploymentConfig: "${DATABASE_SERVICE_NAME}"
+              application: "${APPLICATION_NAME}"
+          spec: 
+            volumes: 
+              - name: "data"
+                emptyDir: {}
+            containers: 
+              - name: "mysql"
+                image: " "
+                ports: 
+                  - containerPort: 3306
+                volumeMounts: 
+                  - name: "data"
+                    mountPath: "/var/lib/mysql/data"
+                readinessProbe: 
+                  timeoutSeconds: 1
+                  initialDelaySeconds: 5
+                  exec: 
+                    command: 
+                      - "/bin/sh"
+                      - "-i"
+                      - "-c"
+                      - "MYSQL_PWD='${DATABASE_PASSWORD}' mysql -h 127.0.0.1 -u ${DATABASE_USER} -D ${DATABASE_NAME} -e 'SELECT 1'"
+                livenessProbe: 
+                  timeoutSeconds: 1
+                  initialDelaySeconds: 30
+                  tcpSocket: 
+                    port: 3306
+                env: 
+                  - name: "MYSQL_USER"
+                    value: "${DATABASE_USER}"
+                  - name: "MYSQL_PASSWORD"
+                    value: "${DATABASE_PASSWORD}"
+                  - name: "MYSQL_DATABASE"
+                    value: "${DATABASE_NAME}"
+        triggers: 
+          - type: "ImageChange"
+            imageChangeParams: 
+              automatic: true
+              containerNames: 
+                - "mysql"
+              from: 
+                kind: "ImageStreamTag"
+                namespace: "${NAMESPACE}"
+                name: "mysql:5.6"
           - type: "ConfigChange"
 #########################
 # Layer 4: Abstractions #
@@ -145,6 +220,21 @@
             targetPort: 8443
         selector: 
           deploymentConfig: "${APPLICATION_NAME}"
+    - kind: "Service"
+      apiVersion: "v1"
+      metadata: 
+        name: "${DATABASE_SERVICE_NAME}"
+        annotations: 
+          description: "Exposes the database server"
+        labels:
+          application: "${APPLICATION_NAME}"
+      spec: 
+        ports: 
+          - name: "mysql"
+            port: 3306
+            targetPort: 3306
+        selector: 
+          deploymentConfig: "${DATABASE_SERVICE_NAME}"
     - kind: "Route"
       apiVersion: "v1"
       metadata: 
@@ -178,3 +268,20 @@
       description: "A secret string used to configure the Git webhook."
       generate: "expression"
       from: "[a-zA-Z0-9]{40}"
+    - name: "DATABASE_SERVICE_NAME"
+      displayName: "Database Service Name"
+      value: "mysql"
+    - name: "DATABASE_ENGINE"
+      displayName: "Database Engine"
+      description: "Database engine: postgresql, mysql or sqlite (default)."
+      value: "mysql"
+    - name: "DATABASE_NAME"
+      displayName: "Database Name"
+      value: "default"
+    - name: "DATABASE_USER"
+      displayName: "Database User"
+      value: "cakephp"
+    - name: "DATABASE_PASSWORD"
+      displayName: "Database Password"
+      generate: "expression"
+      from: "[a-zA-Z0-9]{16}"
