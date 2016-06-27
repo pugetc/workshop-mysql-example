@@ -105,13 +105,11 @@
               - containerPort: 8443
                 protocol: TCP
               env: 
-                - name: "DATABASE_SERVICE_NAME"
-                  value: "${DATABASE_SERVICE_NAME}"
-                - name: "${APPLICATION_NAME}_MYSQL_USER"
+                - name: "$MYSQL_USER"
                   value: "${DATABASE_USER}"
-                - name: "${APPLICATION_NAME}_MYSQL_PASSWORD"
+                - name: "$MYSQL_PASSWORD"
                   value: "${DATABASE_PASSWORD}"
-                - name: "${APPLICATION_NAME}_MYSQL_DATABASE"
+                - name: "$MYSQL_DATABASE"
                   value: "${DATABASE_NAME}"
               resources: {}
               terminationMessagePath: "/dev/termination-log"
@@ -178,11 +176,11 @@
                   tcpSocket: 
                     port: 3306
                 env: 
-                  - name: "${APPLICATION_NAME}_MYSQL_USER"
+                  - name: "MYSQL_USER"
                     value: "${DATABASE_USER}"
-                  - name: "${APPLICATION_NAME}_MYSQL_PASSWORD"
+                  - name: "MYSQL_PASSWORD"
                     value: "${DATABASE_PASSWORD}"
-                  - name: "${APPLICATION_NAME}_MYSQL_DATABASE"
+                  - name: "MYSQL_DATABASE"
                     value: "${DATABASE_NAME}"
         triggers: 
           - type: "ImageChange"
@@ -270,7 +268,7 @@
       displayName: "Database Service Name"
       description: "The name assigned to all of the DB objects defined in this template."
       required: true
-      value: "workshop-mysql"
+      value: "mysql"
     - name: "DATABASE_NAME"
       displayName: "Database Name"
       value: "mysqldb"
