@@ -150,17 +150,11 @@
               deploymentConfig: "${DATABASE_SERVICE_NAME}"
               application: "${APPLICATION_NAME}"
           spec: 
-            volumes: 
-              - name: "data"
-                emptyDir: {}
             containers: 
               - name: "mysql"
                 image: " "
                 ports: 
                   - containerPort: 3306
-                volumeMounts: 
-                  - name: "data"
-                    mountPath: "/var/lib/mysql/data"
                 readinessProbe: 
                   timeoutSeconds: 1
                   initialDelaySeconds: 5
@@ -182,6 +176,13 @@
                     value: "${DATABASE_PASSWORD}"
                   - name: "MYSQL_DATABASE"
                     value: "${DATABASE_NAME}"
+                volumeMounts: 
+                  - name: "data"
+                    mountPath: "/var/lib/mysql/data"
+            volumes: 
+              - name: "data"
+                persistentVolumeClaim:
+                  claimName: "${DATABASE_SERVICE_NAME}-pvc"
         triggers: 
           - type: "ImageChange"
             imageChangeParams: 
@@ -246,6 +247,21 @@
         to: 
           kind: "Service"
           name: "${APPLICATION_NAME}"
+    - kind: "PersistentVolumeClaim"
+      apiVersion: "v1"
+      metadata:
+        name: "${DATABASE_SERVICE_NAME}-pvc"
+        annotations: 
+          description: "creates an persistent volume claim"
+        labels:
+          application: "${APPLICATION_NAME}"
+      spec: 
+        accessModes: "ReadWriteMany" 
+        resources:
+          requests:
+            storage: "3Gi"
+        selector: 
+          deploymentConfig: "${DATABASE_SERVICE_NAME}"
 ##############
 # Parameters #
 ##############
