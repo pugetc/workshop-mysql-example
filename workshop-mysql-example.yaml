@@ -256,7 +256,8 @@
         labels:
           application: "${APPLICATION_NAME}"
       spec: 
-        accessModes: "ReadWriteMany" 
+        accessModes: 
+          - "ReadWriteMany" 
         resources:
           requests:
             storage: "3Gi"
