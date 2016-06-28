@@ -261,8 +261,6 @@
         resources:
           requests:
             storage: "3Gi"
-        selector: 
-          deploymentConfig: "${DATABASE_SERVICE_NAME}"
 ##############
 # Parameters #
 ##############
