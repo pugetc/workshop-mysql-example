@@ -28,8 +28,8 @@
           description: "Keeps track of changes in the application image"
         labels:
           application: "${APPLICATION_NAME}"
-        spec:
-          dockerImageRepository: {}
+      spec:
+        dockerImageRepository: {}
         tags:
           name: latest
 ########################
@@ -101,7 +101,6 @@
         replicas: 1
         selector: 
           deploymentConfig: "${DATABASE_SERVICE_NAME}"
-          application: "${APPLICATION_NAME}"
         strategy: 
           type: "Recreate"
         template: 
