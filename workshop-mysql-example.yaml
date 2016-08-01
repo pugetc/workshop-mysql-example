@@ -243,7 +243,7 @@
           sourceStrategy:
             env:
             - name: MAVEN_ARGS_APPEND
-              value: -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.all
+              value: 'package -Popenshift -DskipTest -s settings.xml'
             from: 
               kind: "ImageStreamTag"
               namespace: "openshift"
