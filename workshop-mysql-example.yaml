@@ -241,13 +241,13 @@
         strategy: 
           type: "Source"
           sourceStrategy:
-            env:
-            - name: MAVEN_ARGS_APPEND
-              value: 'package -Popenshift -DskipTest -s settings.xml'
             from: 
               kind: "ImageStreamTag"
               namespace: "openshift"
               name: "jboss-webserver30-tomcat7-openshift:latest"
+            env:
+              - name: MAVEN_ARGS_APPEND
+                value: 'package -Popenshift -DskipTest -s settings.xml'
         output: 
           to: 
             kind: "ImageStreamTag"
