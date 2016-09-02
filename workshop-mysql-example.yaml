@@ -28,10 +28,10 @@
           description: "Keeps track of changes in the application image"
         labels:
           application: "${APPLICATION_NAME}"
-      spec:
-        dockerImageRepository: {}
-      tags:
-        name: latest
+        spec:
+          dockerImageRepository: {}
+        tags:
+          name: latest
 ########################
 # Layer 3: Deployments #
 ########################
